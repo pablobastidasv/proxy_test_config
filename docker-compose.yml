@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  people:
+    image: pablobastidasv/poc_api_people
+#    build:
+#      people/.
+    networks:
+      - be
+
+  companies:
+    image: pablobastidasv/poc_api_companies
+#    build:
+#      company/.
+    depends_on:
+      - company_db
+    networks:
+      - be
+
+  company_db:
+    image: mongo:3.6
+    networks:
+      - be
+
+  fe:
+    image:  pablobastidasv/poc_fe
+#    build:
+#      poc/.
+    volumes:
+      - ./conf:/etc/nginx/conf.d:ro
+    ports:
+      - 80:80
+    depends_on:
+      - companies
+      - people
+    networks:
+      - fe
+      - be
+
+networks:
+  be:
+
+  fe:
